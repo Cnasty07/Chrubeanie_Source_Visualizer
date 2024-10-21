@@ -13,9 +13,17 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "CSV-SE.helloWorld",
-      "title": "Hello World"
-    }]
+      "command": "CSV-SE.showSourceVisualizer",
+      "title": "SE Source Visualizer(Chrubeanie)"
+    }],
+    "views": {
+      "explorer": [
+        {
+          "id": "SourceTree",
+          "name": "Source Tree List"
+        }
+      ]
+    }
   },
   "scripts": {
     "lint": "eslint .",
