@@ -11,30 +11,15 @@ const fs = require('fs');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "CSV-SE" is now active!');
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	// const disposable = vscode.commands.registerCommand('CSV-SE.showSourceVisualizer', function () {
-		// The code you place here will be executed every time your command is executed
 
-		// Display a message box to the user
-	// 	vscode.window.showInformationMessage('Chrubeanie_Source_Visualizer Activated.');
-	// 	console.log(vscode.window.activeTextEditor.document.fileName)
+	/* TODO: 
+		1. Add sidebar tree overview for workbench
+		2. Create tables in html to output the DocumentSymbols
 
-	// 	let active_document = vscode.window.activeTextEditor
-	// 	let new_doc = vscode.Uri.parse(active_document.document.fileName)
-
-		
-	// 	console.log(active_document.document.getText())
-		
-
-	// });
-
+	*/
 	context.subscriptions.push(
 		vscode.commands.registerCommand('CSV-SE.showSourceVisualizer', function () {
 			vscode.window.showInformationMessage('Chrubeanie_Source_Visualizer Activated.');
@@ -48,6 +33,8 @@ function activate(context) {
 				}
 			)
 			panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'CSV-SE/viewHTML.html'))
+
+			/* FIXME: figuring out a way to preload the webview with static content without using a server
 			let custom_view = async () => { 
 				let load_page =  await fetch("/CSV-SE/viewHTML.html").then((response) => {return response})
 				let sel_in = load_page
@@ -55,13 +42,13 @@ function activate(context) {
 			
 			}
 			custom_view()
-			// Display a message box to the user
-			// panel.webview.html = getWebViewSourceVisual(vscode.window.activeTextEditor.document.fileName)
-			
+			*/
+			// INFO: Picks the open document from the vscode window to use when command is started
 			let active_document = vscode.window.activeTextEditor
 			vscode.window.showTextDocument(active_document.document)
 			let new_doc = vscode.Uri.parse(active_document.document.fileName)
-			// panel.webview.postMessage(async () => { await new_doc_symbols[0]})
+			
+			// function for updating webview, currently set to every 5 seconds 
 			const updateWebView = async () => {
 				let DSP = await vscode.commands.executeCommand("vscode.executeDocumentSymbolProvider", new_doc).then((data) => { return data })
 				let new_doc_symbols = Object.assign({},DSP)
@@ -80,7 +67,7 @@ function activate(context) {
 			
 			const intr = setInterval(updateWebView,5000)
 
-			// when closing webview
+			// when closing webview clears interval
 			panel.onDidDispose( () => {
 				clearInterval(intr);
 			},
@@ -89,11 +76,11 @@ function activate(context) {
 			);
 			
 		})
-		// "CSV-SE/viewHTML.html"
+	
 	);
-	// context.subscriptions.push()
+	
 }
-
+// idk
 async function get_html() {
 	let html_render = await fs.readFile("/CSV-SE/viewHTML.html",(error,data) => {
 		console.log(error,data)
@@ -102,6 +89,7 @@ async function get_html() {
 	return html_render
 }
 
+// temporary web page render until custom panel is complete
 function getWebViewSourceVisual(activeEditor) {
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -113,7 +101,7 @@ function getWebViewSourceVisual(activeEditor) {
 <body>
 	<h1>Source Visualizer</h1>
 	<br>
-	docu
+	${get_html()}
 	
 </body>
 </html>`
