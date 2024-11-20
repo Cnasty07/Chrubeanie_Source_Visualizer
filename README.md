@@ -2,7 +2,12 @@
 
 by Chris Nastasi, Ruben Reyes, & Melanie Nunez
 
+
+## Description
+
+Source Code Visualizer for SE1
+
+
 ## Features
 
 - TBD
-
