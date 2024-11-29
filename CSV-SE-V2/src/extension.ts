@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 			panel.onDidDispose(() => {
 				console.log("disposing webview");
 			}, null, context.subscriptions);
-			
+			// git cahnge
 			
 			// gets all the active text editors in the workspace when active is changed
 			context.subscriptions.push(
