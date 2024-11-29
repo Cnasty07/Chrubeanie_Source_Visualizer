@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as ejs from 'ejs';
 import * as path from 'path';
 import * as symbolExtractor from './utils/symbolExtractor';
+import { NodeDependenciesProvider } from './app/TreeView';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -22,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
         2. Create tables in html to output the DocumentSymbols
         3. Create separate modules for each script 
     */
-
+	  
     context.subscriptions.push(
         vscode.commands.registerCommand('CSV-SE-V2.Chrubeanie-Source-Visualizer-V2', () => {
             vscode.window.showInformationMessage('Chrubeanie_Source_Visualizer Activated.');
