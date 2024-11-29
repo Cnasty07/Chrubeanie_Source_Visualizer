@@ -1,0 +1,61 @@
+{
+  "name": "CSV-SE-V2",
+  "displayName": "Chrubeanie_Source_Visualizer_V2",
+  "description": "source-code-visualizer",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onWebviewPanel:sourceVisualizer"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "CSV-SE-V2.Chrubeanie-Source-Visualizer-V2",
+        "title": "Start: Chrubeanie Source Visualizer V2"
+      },
+      {
+        "command": "CSV-SE-V2.stopExtension",
+        "title": "Stop: Chrubeanie Source Visualizer V2"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "Chrubeanie-Source-Visualizer-V2",
+          "name": "Chrubeanie Source Visualizer V2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.11.1",
+    "mocha": "^10.8.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@types/ejs": "^3.1.5",
+    "ejs": "^3.1.10"
+  }
+}
