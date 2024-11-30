@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-
-const ext = vscode.extensions.getExtension('CSV-SE-V2');
+import {context} from '../extension';
+const ext = context.extension;
 
 export function test_event(event: vscode.TextEditorSelectionChangeEvent) {
     vscode.window.showInformationMessage('Event Triggered');

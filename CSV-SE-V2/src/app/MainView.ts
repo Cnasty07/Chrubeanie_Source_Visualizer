@@ -4,15 +4,15 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { extractSymbols } from '../utils/symbolExtractor';
 
-const ext = vscode.extensions.getExtension('CSV-SE-V2');
 
 // creates the webview panel
 export function create_web(context: vscode.ExtensionContext) {
     const panel = vscode.window.createWebviewPanel(
         'sourceVisualizer', // Identifies the type of the webview. Used internally
         'Source Visualizer', // Title of the panel displayed to the user
-        {preserveFocus: true, viewColumn: vscode.ViewColumn.Beside}, // Editor column to show the new webview panel in
+        vscode.ViewColumn.Active, // Editor column to show the new webview panel in.
     );
+    console.log("view column: ",panel.viewColumn?.toString());
     panel.webview.html = getWebViewSourceVisual(context);
     // panel.webview.html = getWebViewSourceEJS(context, undefined);
     vscode.window.showInformationMessage('Webview Created');
@@ -28,10 +28,10 @@ export async function MainView(document: vscode.TextDocument) {
     // return dynamic_view;
 }
 
-export class RenderingFunctions {
+class RenderingFunctions {
     
     constructor() {
-        let context = ext?.activate();
+        // this.getWebViewSourceEJS(context, undefined);
     }
     public getView(): string {
         // let new_view;
