@@ -8,7 +8,7 @@ import * as ejs from 'ejs';
 import * as path from 'path';
 import * as symbolExtractor from './utils/symbolExtractor';
 import * as extEvents from './utils/extEvents';
-import { DepNodeProvider, Dependency } from './app/TreeView';
+import { SidebarProvider, Dependency } from './app/sideBarView';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -19,48 +19,47 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-	let isExtensionActive = true;
+	
+	// sidebar view
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0)) 
 	? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
 	
-	// let NodeDependenciesProvider = new DepNodeProvider(rootPath);
-	// vscode.window.registerTreeDataProvider('Chrubeanie-Source-Visualizer-V2', NodeDependenciesProvider);
-	// vscode.commands.registerCommand('nodeDependencies.refreshEntry', () => NodeDependenciesProvider.refresh());
+	const sidebarProvider = new SidebarProvider(context.extensionUri);
+	context.subscriptions.push(
+		vscode.window.registerTreeDataProvider(
+			"chrubeanie-sidebar",
+			sidebarProvider
+		)
+	);
+	
+	
+	let isExtensionActive = true;
+	let symbolsClass = new symbolExtractor.DocumentSymbolProviderCustom();
     context.subscriptions.push(
 		// activates the source visualizer
         vscode.commands.registerCommand('CSV-SE-V2.Chrubeanie-Source-Visualizer-V2', async () => {
-            vscode.window.showInformationMessage('Chrubeanie_Source_Visualizer Activated.');
+			vscode.window.showInformationMessage('Chrubeanie_Source_Visualizer Activated.');
             // The code you place here will be executed every time your command is executed
-
+			
             // INFO: Creates the panel with local extension path to render templates
 			const panel = WebViewModule.create_web(context);
-			// const panel = WebViewModule.MainViewPanel.render();
-
 			
-            // Add more functionality as needed
-			let active_document = vscode.window.activeTextEditor?.document;
-		
 			
 			let activeDocument = vscode.window.activeTextEditor?.document;
 			
 			if (activeDocument) {
-				let symbols = symbolExtractor.get_symbols(activeDocument.uri);
-				console.log(symbols);
+				// let symbols = symbolExtractor.get_symbols(activeDocument.uri);
+				// console.log(symbols);
+				const visibleTextEditors = vscode.window.visibleTextEditors;
+				console.log(visibleTextEditors.map);
+				visibleTextEditors.forEach(async editor => {
+					console.log(`Visible editor: ${editor.document.fileName}`);
+					let newdoc = await symbolsClass.provideDocumentSymbols(editor.document, new vscode.CancellationTokenSource().token);
+					console.log(newdoc);
+				});
 			} else {
 				vscode.window.showErrorMessage('No active document found.');
 			}
-			// webview panel event listeners
-			panel.webview.onDidReceiveMessage(
-				message => {
-					switch (message.command) {
-						case 'Editor Changed.':
-							vscode.window.showErrorMessage(message.text);
-							return;
-					}
-				},
-				undefined,
-				context.subscriptions
-			);
 			panel.onDidDispose(() => {
 				console.log("disposing webview");
 			}, null, context.subscriptions);
@@ -70,18 +69,15 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.onDidChangeVisibleTextEditors(async (response) => {
 					console.log("length: " + response.length);
 					panel.webview.postMessage({ command: 'Editor Changed.' });
-					active_document = response[0]?.document;
+					activeDocument = response[0]?.document;
 					vscode.window.showInformationMessage('Document Changed');
-					panel.title = active_document?.fileName || "No Document Open";
-					console.log(active_document?.fileName);
+					panel.title = activeDocument?.fileName || "No Document Open";
+					console.log(activeDocument?.fileName);
 					
 					
 					if (activeDocument) {
-						let symbolsClass = new symbolExtractor.DocumentSymbolProviderCustom();
 						await symbolsClass.provideDocumentSymbols(activeDocument, new vscode.CancellationTokenSource().token);
 						console.log(symbolsClass);
-						// let symbols = symbolExtractor.get_symbols(activeDocument.uri);
-						// console.log(symbols);
 					} else {
 						vscode.window.showErrorMessage('No active document found.');
 					}
@@ -92,10 +88,12 @@ export function activate(context: vscode.ExtensionContext) {
 						console.log(`Open document2: ${doc.fileName}`);
 					
 							let data_changes = async () => {
-								
-							
-								let newdoc =  await symbolExtractor.extractSymbols(doc);
-								console.log(newdoc);
+								const visibleTextEditors = vscode.window.visibleTextEditors;
+								visibleTextEditors.forEach(async editor => {
+									console.log(`Visible editor: ${editor.document.fileName}`);
+									let newdoc =  await symbolsClass.provideDocumentSymbols(editor.document,new vscode.CancellationTokenSource().token);
+									console.log(newdoc);
+								});
 							};
 							data_changes();
 							

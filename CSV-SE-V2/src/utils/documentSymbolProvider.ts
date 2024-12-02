@@ -1,21 +1,19 @@
 import * as vscode from 'vscode';
 
-
 export class DocumentSymbolProviderCustom implements vscode.DocumentSymbolProvider {
-    constructor() { 
+    constructor() {
         let token = new vscode.CancellationTokenSource().token;
     }
-    public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentSymbol[]> {
+    public provideDocumentSymbols(document: vscode.TextDocument | undefined, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentSymbol[]> {
         const symbols: vscode.DocumentSymbol[] = [];
         if (symbols) {
             symbols.forEach(symbol => {
-                console.log(`Symbol: ${symbol.name}, Kind: ${symbol.kind}, Location: ${document.uri.fsPath}`);
+                console.log(`Symbol: ${symbol.name}, Kind: ${symbol.kind}, Location: ${document?.uri.fsPath}`);
                 if (symbol.children) {
                     symbol.children.forEach(child => {
                         console.log("child");
-                        console.log(`Symbol: ${child.name}, Kind: ${child.kind}, Location: ${document.uri.fsPath}`);
-                        if (child.kind in symbolKindNames)
-                        {
+                        console.log(`Symbol: ${child.name}, Kind: ${child.kind}, Location: ${document?.uri.fsPath}`);
+                        if (child.kind in symbolKindNames) {
                             console.log(child.kind, symbolKindNames[child.kind]);
                         }
                     });
@@ -26,18 +24,6 @@ export class DocumentSymbolProviderCustom implements vscode.DocumentSymbolProvid
         }
 
         return symbols;
-    }
-}
-
-
-
-export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
-    constructor() { }
-    public provideWorkspaceSymbols(query: string, token: vscode.CancellationToken): vscode.ProviderResult<vscode.SymbolInformation[]> {
-        function symbols() {
-            return vscode.commands.executeCommand<vscode.SymbolInformation[]>('vscode.executeWorkspaceSymbolProvider', query);
-        }
-        return symbols();
     }
 }
 

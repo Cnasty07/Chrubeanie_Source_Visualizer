@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onWebviewPanel:sourceVisualizer"
+    "onWebviewPanel:sourceVisualizer",
+    "onView:package-explorer"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -28,28 +29,20 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "package-explorer",
-          "title": "Chrubeanie Package Explorer",
-          "icon": "/list-tree.svg"
+          "id": "chrubeanie-sidebar",
+          "title": "ChrubeanieSV ",
+          "icon": "media/checklist.svg"
         }
       ]
     },
     "views": {
-      "explorer": [
+      "chrubeanie-sidebar": [
         {
-          "id": "Chrubeanie-Source-Visualizer-V2",
-          "name": "Chrubeanie Source Visualizer"
-        }
-      ],
-      "package-explorer": [
-        {
-          "id": "package-explorer",
-          "name": "Node Dependencies",
-          "contextualTitle": "Node Dependencies"
-        },
-        {
-          "id": "package-outline",
-          "name": "Package Outline"
+          "type": "tree",
+          "id": "chrubeanie-sidebar",
+          "name": "Workspace Tree",
+          "contextualTitle": "Node Dependencies",
+          "icon": "media/checklist.svg"
         }
       ]
     }
